@@ -64,6 +64,23 @@ const hasRole = (roleName) => {
                                     :href="route('mata-pelajaran.index')" :active="route().current('mata-pelajaran.*')">
                                     Mata Pelajaran
                                 </NavLink>
+                                <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('jadwal.index')"
+                                    :active="route().current('jadwal.*')">
+                                    Jadwal Pelajaran
+                                </NavLink>
+                                <!-- Divider Akademik -->
+                                <div v-if="hasRole('super-admin') || hasRole('tu')"
+                                    class="hidden sm:flex items-center ml-4 border-l pl-4 border-gray-300">
+                                    <span
+                                        class="text-xs text-gray-400 font-bold uppercase tracking-wider">Akademik</span>
+                                </div>
+
+                                <NavLink v-if="hasRole('super-admin') || hasRole('tu')"
+                                    :href="route('jadwal-pelajaran.index')"
+                                    :active="route().current('jadwal-pelajaran.*')">
+                                    Jadwal Pelajaran
+                                </NavLink>
+
 
                                 <!-- Menu Khusus Guru -->
                                 <NavLink v-if="hasRole('guru')" href="#" :active="false">
@@ -193,6 +210,20 @@ const hasRole = (roleName) => {
                             <NavLink v-if="hasRole('super-admin') || hasRole('tu')"
                                 :href="route('mata-pelajaran.index')" :active="route().current('mata-pelajaran.*')">
                                 Mata Pelajaran
+                            </NavLink>
+                            <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('jadwal.index')"
+                                :active="route().current('jadwal.*')">
+                                Jadwal Pelajaran
+                            </NavLink>
+                            <!-- Divider Akademik -->
+                            <div v-if="hasRole('super-admin') || hasRole('tu')"
+                                class="hidden sm:flex items-center ml-4 border-l pl-4 border-gray-300">
+                                <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Akademik</span>
+                            </div>
+
+                            <NavLink v-if="hasRole('super-admin') || hasRole('tu')"
+                                :href="route('jadwal-pelajaran.index')" :active="route().current('jadwal-pelajaran.*')">
+                                Jadwal Pelajaran
                             </NavLink>
 
                             <!-- Menu Khusus Guru -->

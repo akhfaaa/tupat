@@ -7,6 +7,8 @@ use App\Http\Controllers\GuruController;
 use App\Http\Controllers\RombelController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\MataPelajaranController;
+use App\Http\Controllers\JadwalPelajaranController;
+use App\Http\Controllers\JadwalController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,6 +41,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('rombel', RombelController::class);
         Route::resource('siswa', SiswaController::class);
         Route::resource('mata-pelajaran', MataPelajaranController::class);
+        Route::resource('jadwal-pelajaran', JadwalPelajaranController::class);
+        Route::resource('jadwal', JadwalController::class);
     });
 });
 
