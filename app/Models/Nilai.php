@@ -6,5 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Nilai extends Model
 {
-    //
+    protected $guarded = ['id'];
+
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class);
+    }
+
+    public function mataPelajaran()
+    {
+        return $this->belongsTo(MataPelajaran::class);
+    }
+
+    public function tahunAjaran()
+    {
+        return $this->belongsTo(TahunAjaran::class);
+    }
 }

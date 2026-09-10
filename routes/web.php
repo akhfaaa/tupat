@@ -10,6 +10,7 @@ use App\Http\Controllers\MataPelajaranController;
 // use App\Http\Controllers\JadwalPelajaranController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\PklController;
+use App\Http\Controllers\PenilaianController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -44,6 +45,11 @@ Route::middleware('auth')->group(function () {
         Route::resource('mata-pelajaran', MataPelajaranController::class);
         Route::resource('jadwal', JadwalController::class);
         Route::resource('pkl', PklController::class);
+    });
+
+    // Grup Rute Khusus Guru & Admin
+    Route::middleware(['role:super-admin|guru'])->group(function () {
+        Route::get('penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');
     });
 });
 
