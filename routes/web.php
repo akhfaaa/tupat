@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
     // Grup Rute Khusus Guru & Admin
     Route::middleware(['role:super-admin|guru'])->group(function () {
         Route::get('penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');
+        Route::post('penilaian', [PenilaianController::class, 'store'])->name('penilaian.store');
     });
 });
 
