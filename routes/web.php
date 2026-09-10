@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\JurusanController; // Pastikan ini di-import
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,15 +15,18 @@ Route::get('/', function () {
     ]);
 });
 
+// Pastikan rute dashboard ini TIDAK TERHAPUS
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Grup Rute yang butuh Login
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Grup Rute Khusus Master Data (Super Admin & TU)
     Route::middleware(['role:super-admin|tu'])->group(function () {
         Route::resource('jurusan', JurusanController::class);
     });

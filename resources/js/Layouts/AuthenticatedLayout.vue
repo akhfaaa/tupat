@@ -38,8 +38,9 @@ const hasRole = (roleName) => {
                                 </NavLink>
 
                                 <!-- Menu Khusus Admin & TU -->
-                                <NavLink v-if="hasRole('super-admin') || hasRole('tu')" href="route('jurusan.index')" :active="false">
-                                    Master Data
+                                <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('jurusan.index')"
+                                    :active="route().current('jurusan.*')">
+                                    Master Data (Jurusan)
                                 </NavLink>
 
                                 <!-- Menu Khusus Guru -->
@@ -146,9 +147,10 @@ const hasRole = (roleName) => {
                             </ResponsiveNavLink>
 
                             <!-- Menu Khusus Admin & TU -->
-                            <ResponsiveNavLink v-if="hasRole('super-admin') || hasRole('tu')" href="route('jurusan.index')" :active="false">
-                                Master Data
-                            </ResponsiveNavLink>
+                            <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('jurusan.index')"
+                                :active="route().current('jurusan.*')">
+                                Master Data (Jurusan)
+                            </NavLink>
 
                             <!-- Menu Khusus Guru -->
                             <ResponsiveNavLink v-if="hasRole('guru')" href="#" :active="false">
