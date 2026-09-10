@@ -43,6 +43,11 @@ const hasRole = (roleName) => {
                                     Master Data (Jurusan)
                                 </NavLink>
 
+                                <NavLink v-if="hasRole('super-admin') || hasRole('tu')"
+                                    :href="route('tahun-ajaran.index')" :active="route().current('tahun-ajaran.*')">
+                                    Tahun Ajaran
+                                </NavLink>
+
                                 <!-- Menu Khusus Guru -->
                                 <NavLink v-if="hasRole('guru')" href="#" :active="false">
                                     Jurnal Mengajar
@@ -150,6 +155,11 @@ const hasRole = (roleName) => {
                             <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('jurusan.index')"
                                 :active="route().current('jurusan.*')">
                                 Master Data (Jurusan)
+                            </NavLink>
+
+                            <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('tahun-ajaran.index')"
+                                :active="route().current('tahun-ajaran.*')">
+                                Tahun Ajaran
                             </NavLink>
 
                             <!-- Menu Khusus Guru -->

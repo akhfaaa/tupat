@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\JurusanController; // Pastikan ini di-import
+use App\Http\Controllers\TahunAjaranController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,6 +30,7 @@ Route::middleware('auth')->group(function () {
     // Grup Rute Khusus Master Data (Super Admin & TU)
     Route::middleware(['role:super-admin|tu'])->group(function () {
         Route::resource('jurusan', JurusanController::class);
+        Route::resource('tahun-ajaran', TahunAjaranController::class);
     });
 });
 
