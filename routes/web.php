@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\JurusanController; // Pastikan ini di-import
+use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\RombelController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,6 +34,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('jurusan', JurusanController::class);
         Route::resource('tahun-ajaran', TahunAjaranController::class);
         Route::resource('guru', GuruController::class);
+        Route::resource('rombel', RombelController::class);
     });
 });
 
