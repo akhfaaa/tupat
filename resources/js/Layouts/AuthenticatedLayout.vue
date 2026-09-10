@@ -38,7 +38,7 @@ const hasRole = (roleName) => {
                                 </NavLink>
 
                                 <!-- Menu Khusus Admin & TU -->
-                                <NavLink v-if="hasRole('super-admin') || hasRole('tu')" href="#" :active="false">
+                                <NavLink v-if="hasRole('super-admin') || hasRole('tu')" href="route('jurusan.index')" :active="false">
                                     Master Data
                                 </NavLink>
 
@@ -146,7 +146,7 @@ const hasRole = (roleName) => {
                             </ResponsiveNavLink>
 
                             <!-- Menu Khusus Admin & TU -->
-                            <ResponsiveNavLink v-if="hasRole('super-admin') || hasRole('tu')" href="#" :active="false">
+                            <ResponsiveNavLink v-if="hasRole('super-admin') || hasRole('tu')" href="route('jurusan.index')" :active="false">
                                 Master Data
                             </ResponsiveNavLink>
 
