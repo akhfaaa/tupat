@@ -32,7 +32,14 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                // Modifikasi bagian user ini
+                'user' => $request->user() ? [
+                    'id' => $request->user()->id,
+                    'name' => $request->user()->name,
+                    'email' => $request->user()->email,
+                    // Tambahkan baris ini untuk mengirim role ke Vue
+                    'roles' => $request->user()->getRoleNames(),
+                ] : null,
             ],
         ];
     }
