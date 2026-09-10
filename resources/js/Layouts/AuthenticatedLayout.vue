@@ -56,6 +56,10 @@ const hasRole = (roleName) => {
                                     :active="route().current('rombel.*')">
                                     Data Kelas/Rombel
                                 </NavLink>
+                                <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('siswa.index')"
+                                    :active="route().current('siswa.*')">
+                                    Data Siswa
+                                </NavLink>
 
                                 <!-- Menu Khusus Guru -->
                                 <NavLink v-if="hasRole('guru')" href="#" :active="false">
@@ -177,6 +181,10 @@ const hasRole = (roleName) => {
                             <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('rombel.index')"
                                 :active="route().current('rombel.*')">
                                 Data Kelas/Rombel
+                            </NavLink>
+                            <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('siswa.index')"
+                                :active="route().current('siswa.*')">
+                                Data Siswa
                             </NavLink>
 
                             <!-- Menu Khusus Guru -->
