@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\JurusanController; // Pastikan ini di-import
 use App\Http\Controllers\TahunAjaranController;
+use App\Http\Controllers\GuruController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:super-admin|tu'])->group(function () {
         Route::resource('jurusan', JurusanController::class);
         Route::resource('tahun-ajaran', TahunAjaranController::class);
+        Route::resource('guru', GuruController::class);
     });
 });
 
