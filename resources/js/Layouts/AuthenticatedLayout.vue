@@ -76,6 +76,10 @@ const hasRole = (roleName) => {
                                     :active="route().current('jadwal.*')">
                                     Jadwal Pelajaran
                                 </NavLink>
+                                <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('pkl.index')"
+                                    :active="route().current('pkl.*')">
+                                    Data PKL
+                                </NavLink>
 
 
                                 <!-- Menu Khusus Guru -->
@@ -217,6 +221,10 @@ const hasRole = (roleName) => {
                             <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('jadwal.index')"
                                 :active="route().current('jadwal.*')">
                                 Jadwal Pelajaran
+                            </NavLink>
+                            <NavLink v-if="hasRole('super-admin') || hasRole('tu')" :href="route('pkl.index')"
+                                :active="route().current('pkl.*')">
+                                Data PKL
                             </NavLink>
 
                             <!-- Menu Khusus Guru -->
