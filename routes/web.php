@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
     // Grup Rute Khusus Siswa
     Route::middleware(['role:siswa'])->group(function () {
         Route::get('/rapor-ku', [RaporSiswaController::class, 'index'])->name('siswa.rapor');
+        Route::get('/rapor-ku/cetak', [RaporSiswaController::class, 'cetakPdf'])->name('siswa.rapor.cetak');
     });
 });
 
