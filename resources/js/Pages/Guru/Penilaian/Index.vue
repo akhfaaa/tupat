@@ -3,7 +3,6 @@ import { ref, watch } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 
 const props = defineProps({
@@ -11,178 +10,109 @@ const props = defineProps({
     mapels: Array,
     siswas: Array,
     filters: Object,
-    riwayat_jurnals: Array,
 });
 
 const selectedRombel = ref(props.filters.rombel_id || '');
+const selectedMapel = ref(props.filters.mata_pelajaran_id || '');
+const form = useForm({
+    mata_pelajaran_id: selectedMapel.value,
+    nilais: [],
+});
 
 const filterData = () => {
-    router.get(route('jurnal.index'), {
+    router.get(route('penilaian.index'), {
         rombel_id: selectedRombel.value,
+        mata_pelajaran_id: selectedMapel.value,
     }, { preserveState: true, preserveScroll: true });
 };
 
-const form = useForm({
-    rombel_id: selectedRombel,
-    mata_pelajaran_id: '',
-    tanggal: new Date().toISOString().substr(0, 10),
-    jam_ke: '',
-    materi_pembelajaran: '',
-    catatan_kelas: '',
-    absensi: [],
-});
-
-watch(() => props.siswas, (newSiswas) => {
-    form.absensi = newSiswas.map(siswa => ({
+watch(() => props.siswas, (siswas) => {
+    form.nilais = siswas.map((siswa) => ({
         siswa_id: siswa.id,
         nama_lengkap: siswa.nama_lengkap,
-        nisn: siswa.nisn,
-        status: 'Hadir', // Default status
-        keterangan: '',
+        nilai_tugas: siswa.nilais?.[0]?.nilai_tugas ?? '',
+        nilai_uts: siswa.nilais?.[0]?.nilai_uts ?? '',
+        nilai_uas: siswa.nilais?.[0]?.nilai_uas ?? '',
     }));
 }, { immediate: true });
 
-const submitJurnal = () => {
-    form.post(route('jurnal.store'), {
+watch(selectedMapel, (value) => {
+    form.mata_pelajaran_id = value;
+});
+
+const nilaiAkhir = (nilai) => ((Number(nilai.nilai_tugas || 0) * 0.3)
+    + (Number(nilai.nilai_uts || 0) * 0.3)
+    + (Number(nilai.nilai_uas || 0) * 0.4)).toFixed(2);
+
+const submitNilai = () => {
+    form.post(route('penilaian.store'), {
         preserveScroll: true,
-        onSuccess: () => {
-            form.reset('materi_pembelajaran', 'catatan_kelas', 'jam_ke');
-            alert('Jurnal dan presensi berhasil disimpan!');
-        }
+        onSuccess: () => alert('Nilai berhasil disimpan!'),
     });
 };
 </script>
 
 <template>
-
-    <Head title="Jurnal & Presensi" />
+    <Head title="E-Rapor" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Jurnal Mengajar & Presensi Harian</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Input Nilai E-Rapor</h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    <!-- Kolom Kiri: Form Jurnal -->
-                    <div class="lg:col-span-1 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 h-fit">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">Informasi Jurnal</h3>
-
-                        <div class="space-y-4">
-                            <div>
-                                <InputLabel value="Pilih Kelas" />
-                                <select v-model="selectedRombel" @change="filterData"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm">
-                                    <option value="">-- Pilih Kelas --</option>
-                                    <option v-for="rombel in rombels" :key="rombel.id" :value="rombel.id">{{
-                                        rombel.nama_rombel
-                                        }}</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <InputLabel value="Mata Pelajaran" />
-                                <select v-model="form.mata_pelajaran_id"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm" required>
-                                    <option value="" disabled>-- Pilih Mapel --</option>
-                                    <option v-for="mapel in mapels" :key="mapel.id" :value="mapel.id">{{
-                                        mapel.nama_mapel }}
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <InputLabel value="Tanggal" />
-                                    <TextInput type="date" v-model="form.tanggal" class="mt-1 block w-full text-sm"
-                                        required />
-                                </div>
-                                <div>
-                                    <InputLabel value="Jam Ke-" />
-                                    <TextInput type="text" v-model="form.jam_ke" placeholder="Ex: 1-2"
-                                        class="mt-1 block w-full text-sm" required />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel value="Materi Pembelajaran" />
-                                <textarea v-model="form.materi_pembelajaran" rows="3"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm"
-                                    required></textarea>
-                            </div>
-
-                            <div>
-                                <InputLabel value="Catatan Kelas (Opsional)" />
-                                <textarea v-model="form.catatan_kelas" rows="2"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm"></textarea>
-                            </div>
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <InputLabel value="Pilih Kelas" />
+                            <select v-model="selectedRombel" @change="filterData" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm">
+                                <option value="">-- Pilih Kelas --</option>
+                                <option v-for="rombel in rombels" :key="rombel.id" :value="rombel.id">{{ rombel.nama_rombel }}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <InputLabel value="Mata Pelajaran" />
+                            <select v-model="selectedMapel" @change="filterData" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm">
+                                <option value="">-- Pilih Mata Pelajaran --</option>
+                                <option v-for="mapel in mapels" :key="mapel.id" :value="mapel.id">{{ mapel.nama_mapel }}</option>
+                            </select>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Kolom Kanan: Daftar Presensi Siswa -->
-                    <div class="lg:col-span-2 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                        <div class="flex justify-between items-center mb-4 border-b pb-2">
-                            <h3 class="text-lg font-medium text-gray-900">Daftar Presensi Siswa</h3>
-                            <span v-if="selectedRombel" class="text-sm text-gray-500">Total: {{ form.absensi.length }}
-                                Siswa</span>
-                        </div>
-
-                        <div v-if="!selectedRombel" class="text-center py-8 text-gray-500 italic">
-                            Silakan pilih kelas terlebih dahulu pada panel kiri untuk memuat daftar siswa.
-                        </div>
-
-                        <form v-else @submit.prevent="submitJurnal">
-                            <div class="overflow-x-auto max-h-[500px]">
-                                <table class="w-full text-sm text-left text-gray-500">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
-                                        <tr>
-                                            <th class="px-4 py-3">Nama Siswa</th>
-                                            <th class="px-4 py-3 text-center">Hadir</th>
-                                            <th class="px-4 py-3 text-center">Sakit</th>
-                                            <th class="px-4 py-3 text-center">Izin</th>
-                                            <th class="px-4 py-3 text-center">Alpa</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(item, index) in form.absensi" :key="item.siswa_id"
-                                            class="border-b hover:bg-gray-50">
-                                            <td class="px-4 py-3 font-medium text-gray-900">{{ item.nama_lengkap }}</td>
-                                            <td class="px-4 py-3 text-center">
-                                                <input type="radio" :name="'status_' + index" value="Hadir"
-                                                    v-model="item.status"
-                                                    class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500">
-                                            </td>
-                                            <td class="px-4 py-3 text-center">
-                                                <input type="radio" :name="'status_' + index" value="Sakit"
-                                                    v-model="item.status"
-                                                    class="w-4 h-4 text-yellow-400 bg-gray-100 border-gray-300 focus:ring-yellow-500">
-                                            </td>
-                                            <td class="px-4 py-3 text-center">
-                                                <input type="radio" :name="'status_' + index" value="Izin"
-                                                    v-model="item.status"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
-                                            </td>
-                                            <td class="px-4 py-3 text-center">
-                                                <input type="radio" :name="'status_' + index" value="Alpa"
-                                                    v-model="item.status"
-                                                    class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500">
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="mt-6 flex justify-end">
-                                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                    Simpan Jurnal & Presensi
-                                </PrimaryButton>
-                            </div>
-                        </form>
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <div v-if="!selectedRombel || !selectedMapel" class="text-center py-8 text-gray-500 italic">
+                        Pilih kelas dan mata pelajaran untuk memuat daftar nilai.
                     </div>
-
+                    <form v-else @submit.prevent="submitNilai">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3">Nama Siswa</th>
+                                        <th class="px-4 py-3">Tugas</th>
+                                        <th class="px-4 py-3">UTS</th>
+                                        <th class="px-4 py-3">UAS</th>
+                                        <th class="px-4 py-3">Nilai Akhir</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="nilai in form.nilais" :key="nilai.siswa_id" class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3 font-medium text-gray-900">{{ nilai.nama_lengkap }}</td>
+                                        <td class="px-4 py-3"><input v-model="nilai.nilai_tugas" type="number" min="0" max="100" class="w-24 border-gray-300 rounded-md text-sm"></td>
+                                        <td class="px-4 py-3"><input v-model="nilai.nilai_uts" type="number" min="0" max="100" class="w-24 border-gray-300 rounded-md text-sm"></td>
+                                        <td class="px-4 py-3"><input v-model="nilai.nilai_uas" type="number" min="0" max="100" class="w-24 border-gray-300 rounded-md text-sm"></td>
+                                        <td class="px-4 py-3 font-semibold text-gray-900">{{ nilaiAkhir(nilai) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div v-if="!form.nilais.length" class="text-center py-8 text-gray-500">Belum ada siswa di kelas ini.</div>
+                        <div v-else class="mt-6 flex justify-end">
+                            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Simpan Nilai</PrimaryButton>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
