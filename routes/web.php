@@ -14,6 +14,7 @@ use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\RaporSiswaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JurnalController;
+use App\Http\Controllers\AbsensiSiswaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -61,6 +62,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:siswa'])->group(function () {
         Route::get('/rapor-ku', [RaporSiswaController::class, 'index'])->name('siswa.rapor');
         Route::get('/rapor-ku/cetak', [RaporSiswaController::class, 'cetakPdf'])->name('siswa.rapor.cetak');
+
+        Route::get('/absensi-ku', [AbsensiSiswaController::class, 'index'])->name('siswa.absensi.index');
     });
 });
 
