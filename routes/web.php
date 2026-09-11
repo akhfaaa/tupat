@@ -12,6 +12,7 @@ use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\PklController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\RaporSiswaController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,9 +27,7 @@ Route::get('/', function () {
 });
 
 // Pastikan rute dashboard ini TIDAK TERHAPUS
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 // Grup Rute yang butuh Login
 Route::middleware('auth')->group(function () {
