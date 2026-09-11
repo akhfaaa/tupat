@@ -93,6 +93,10 @@ const hasRole = (roleName) => {
                                     :href="route('penilaian.index')" :active="route().current('penilaian.*')">
                                     Input Nilai (E-Rapor)
                                 </NavLink>
+                                <NavLink v-if="hasRole('super-admin') || hasRole('guru')" :href="route('jurnal.index')"
+                                    :active="route().current('jurnal.*')">
+                                    Jurnal & Presensi
+                                </NavLink>
 
                                 <!-- Menu Khusus Siswa -->
                                 <NavLink v-if="hasRole('siswa')" href="#" :active="false">
@@ -247,6 +251,10 @@ const hasRole = (roleName) => {
                             <NavLink v-if="hasRole('super-admin') || hasRole('guru')" :href="route('penilaian.index')"
                                 :active="route().current('penilaian.*')">
                                 Input Nilai (E-Rapor)
+                            </NavLink>
+                            <NavLink v-if="hasRole('super-admin') || hasRole('guru')" :href="route('jurnal.index')"
+                                :active="route().current('jurnal.*')">
+                                Jurnal & Presensi
                             </NavLink>
 
                             <!-- Menu Khusus Siswa -->

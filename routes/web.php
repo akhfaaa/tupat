@@ -13,6 +13,7 @@ use App\Http\Controllers\PklController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\RaporSiswaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JurnalController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -51,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:super-admin|guru'])->group(function () {
         Route::get('penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');
         Route::post('penilaian', [PenilaianController::class, 'store'])->name('penilaian.store');
+
+        Route::get('jurnal', [JurnalController::class, 'index'])->name('jurnal.index');
+        Route::post('jurnal', [JurnalController::class, 'store'])->name('jurnal.store');
     });
 
     // Grup Rute Khusus Siswa
