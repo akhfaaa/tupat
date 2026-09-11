@@ -101,6 +101,12 @@ const hasRole = (roleName) => {
                                 <NavLink v-if="hasRole('siswa')" href="#" :active="false">
                                     E-Rapor
                                 </NavLink>
+
+                                <!-- Menu Khusus Siswa -->
+                                <NavLink v-if="hasRole('siswa')" :href="route('siswa.rapor')"
+                                    :active="route().current('siswa.rapor')">
+                                    E-Rapor Saya
+                                </NavLink>
                             </div>
                         </div>
 
@@ -241,6 +247,12 @@ const hasRole = (roleName) => {
                             <NavLink v-if="hasRole('super-admin') || hasRole('guru')" :href="route('penilaian.index')"
                                 :active="route().current('penilaian.*')">
                                 Input Nilai (E-Rapor)
+                            </NavLink>
+
+                            <!-- Menu Khusus Siswa -->
+                            <NavLink v-if="hasRole('siswa')" :href="route('siswa.rapor')"
+                                :active="route().current('siswa.rapor')">
+                                E-Rapor Saya
                             </NavLink>
                         </div>
                     </div>

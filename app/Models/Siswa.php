@@ -23,4 +23,9 @@ class Siswa extends Model
     {
         return $this->belongsTo(Rombel::class);
     }
+
+    public function nilais()
+    {
+        return $this->hasMany(Nilai::class);
+    }
 }
