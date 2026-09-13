@@ -22,4 +22,9 @@ class Jadwal extends Model
     {
         return $this->belongsTo(Guru::class);
     }
+
+    public function tahunAjaran()
+    {
+        return $this->belongsTo(TahunAjaran::class);
+    }
 }

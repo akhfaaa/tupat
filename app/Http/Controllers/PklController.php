@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pkl;
 use App\Models\Siswa;
 use App\Models\Guru;
+use App\Models\MitraDudi;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
@@ -13,9 +14,10 @@ class PklController extends Controller
     public function index()
     {
         return Inertia::render('Akademik/Pkl/Index', [
-            'pkls' => Pkl::with(['siswa', 'guru'])->latest()->get(),
+            'pkls' => Pkl::with(['siswa', 'guru', 'mitraDudi'])->latest()->get(),
             'siswas' => Siswa::orderBy('nama_lengkap', 'asc')->get(),
             'gurus' => Guru::orderBy('nama_lengkap', 'asc')->get(),
+            'mitraDudis' => MitraDudi::where('status_aktif', true)->orderBy('nama_perusahaan')->get(),
         ]);
     }
 
@@ -24,6 +26,7 @@ class PklController extends Controller
         $validated = $request->validate([
             'siswa_id' => 'required|exists:siswas,id',
             'guru_id' => 'nullable|exists:gurus,id',
+            'mitra_dudi_id' => 'nullable|exists:mitra_dudis,id',
             'nama_perusahaan' => 'required|string|max:255',
             'divisi_pekerjaan' => 'nullable|string|max:255',
             'alamat_perusahaan' => 'nullable|string',
@@ -41,6 +44,7 @@ class PklController extends Controller
         $validated = $request->validate([
             'siswa_id' => 'required|exists:siswas,id',
             'guru_id' => 'nullable|exists:gurus,id',
+            'mitra_dudi_id' => 'nullable|exists:mitra_dudis,id',
             'nama_perusahaan' => 'required|string|max:255',
             'divisi_pekerjaan' => 'nullable|string|max:255',
             'alamat_perusahaan' => 'nullable|string',

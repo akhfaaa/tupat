@@ -17,4 +17,19 @@ class Pkl extends Model
     {
         return $this->belongsTo(Guru::class);
     }
+
+    public function mitraDudi()
+    {
+        return $this->belongsTo(MitraDudi::class);
+    }
+
+    public function logbooks()
+    {
+        return $this->hasMany(PklLogbook::class);
+    }
+
+    public function assessment()
+    {
+        return $this->hasOne(PklAssessment::class);
+    }
 }

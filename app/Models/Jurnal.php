@@ -21,6 +21,11 @@ class Jurnal extends Model
         return $this->belongsTo(MataPelajaran::class);
     }
 
+    public function tahunAjaran()
+    {
+        return $this->belongsTo(TahunAjaran::class);
+    }
+
     // Satu jurnal memiliki banyak data absensi siswa
     public function absensis()
     {

@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf; // Tambahkan ini
+use Illuminate\Support\Facades\DB;
 
 class RaporSiswaController extends Controller
 {
@@ -20,7 +21,19 @@ class RaporSiswaController extends Controller
             abort(403, 'Profil siswa tidak ditemukan.');
         }
 
-        return Inertia::render('Siswa/Rapor/Index', ['siswa' => $siswa]);
+        $components = DB::table('report_components')
+            ->join('mata_pelajarans', 'mata_pelajarans.id', '=', 'report_components.mata_pelajaran_id')
+            ->where('report_components.siswa_id', $siswa->id)
+            ->where('report_components.tahun_ajaran_id', $siswa->rombel?->tahun_ajaran_id)
+            ->select('report_components.*', 'mata_pelajarans.nama_mapel', 'mata_pelajarans.kelompok')
+            ->orderBy('mata_pelajarans.nama_mapel')
+            ->get()
+            ->groupBy('mata_pelajaran_id');
+
+        return Inertia::render('Siswa/Rapor/Index', [
+            'siswa' => $siswa,
+            'reportComponents' => $components,
+        ]);
     }
 
     // Fungsi baru untuk PDF

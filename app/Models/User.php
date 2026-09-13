@@ -49,4 +49,28 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function hasSystemRole(string $role): bool
+    {
+        return $this->getRoleNames()->contains($role);
+    }
+
+    /**
+     * @param  array<int, string>  $roles
+     */
+    public function hasAnySystemRole(array $roles): bool
+    {
+        return $this->getRoleNames()->intersect($roles)->isNotEmpty();
+    }
+
+    public function guru()
+    {
+        return $this->hasOne(Guru::class);
+    }
+
+    public function children()
+    {
+        return $this->belongsToMany(Siswa::class, 'parent_student', 'parent_id', 'siswa_id')
+            ->withPivot(['relationship', 'is_primary']);
+    }
 }

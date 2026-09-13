@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/vue3';
 
 defineProps({
     siswa: Object,
+    reportComponents: Object,
 });
 </script>
 
@@ -108,6 +109,33 @@ defineProps({
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <h4 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">
+                        Capaian Pembelajaran Kurikulum Merdeka
+                    </h4>
+                    <div v-if="Object.keys(reportComponents || {}).length" class="space-y-5">
+                        <div v-for="components in reportComponents" :key="components[0].mata_pelajaran_id" class="border-b pb-4 last:border-b-0">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <p class="font-semibold text-gray-900">{{ components[0].nama_mapel }}</p>
+                                    <p class="text-xs text-gray-500">Kelompok {{ components[0].kelompok }}</p>
+                                </div>
+                                <span class="text-sm font-semibold text-indigo-600">
+                                    {{ (components.reduce((total, item) => total + Number(item.score || 0), 0) / components.length).toFixed(2) }}
+                                </span>
+                            </div>
+                            <div class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
+                                <div v-for="item in components" :key="item.id" class="rounded-md bg-gray-50 p-3">
+                                    <p class="text-xs capitalize text-gray-500">{{ item.component.replace('_', ' ') }}</p>
+                                    <p class="mt-1 font-semibold text-gray-900">{{ item.score ?? '-' }}</p>
+                                    <p v-if="item.description" class="mt-1 text-xs text-gray-500">{{ item.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p v-else class="text-sm italic text-gray-500">Belum ada komponen capaian pembelajaran.</p>
                 </div>
 
             </div>

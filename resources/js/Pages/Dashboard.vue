@@ -5,13 +5,17 @@ import { computed } from 'vue';
 
 const props = defineProps({
     stats: Object,
+    children: Array,
 });
 
 const user = usePage().props.auth.user;
-const roles = usePage().props.auth.roles || [];
+const roles = computed(() => {
+    const value = usePage().props.auth.user?.roles || [];
+    return Array.isArray(value) ? value : Object.values(value);
+});
 
 // Fungsi bantuan untuk mengecek role
-const isRole = (roleName) => roles.includes(roleName);
+const isRole = (roleName) => roles.value.includes(roleName);
 </script>
 
 <template>
@@ -131,6 +135,43 @@ const isRole = (roleName) => roles.includes(roleName);
                         <h5 class="font-bold text-indigo-700">Lihat E-Rapor</h5>
                         <p class="text-sm text-indigo-600 mt-1">Cetak dan pantau hasil belajar akhir semester Anda.</p>
                     </a>
+                </div>
+
+                <div v-if="isRole('hubin') || isRole('mentor-industri')"
+                    class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <p class="text-sm font-medium text-gray-500">PKL Aktif</p>
+                        <p class="mt-2 text-3xl font-bold text-gray-900">{{ stats.pkl_aktif || 0 }}</p>
+                        <p class="mt-1 text-sm text-gray-500">Penempatan yang sedang berjalan</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <p class="text-sm font-medium text-gray-500">Logbook Menunggu</p>
+                        <p class="mt-2 text-3xl font-bold text-gray-900">{{ stats.logbook_menunggu || 0 }}</p>
+                        <p class="mt-1 text-sm text-gray-500">Perlu diverifikasi pembimbing</p>
+                    </div>
+                </div>
+
+                <div v-if="isRole('guru-bk')" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <h4 class="font-semibold text-lg text-gray-800">Ruang Kerja BK</h4>
+                    <p class="mt-2 text-sm text-gray-500">Kelola poin kedisiplinan, konseling, dan catatan perkembangan siswa.</p>
+                </div>
+
+                <div v-if="isRole('bkk')" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <h4 class="font-semibold text-lg text-gray-800">Bursa Kerja Khusus</h4>
+                    <p class="mt-2 text-sm text-gray-500">Pantau lowongan aktif dan status tracer study alumni.</p>
+                    <p class="mt-4 text-2xl font-bold text-indigo-600">{{ stats.lowongan_aktif || 0 }} lowongan aktif</p>
+                </div>
+
+                <div v-if="isRole('orang-tua')" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <h4 class="font-semibold text-lg text-gray-800">Pantauan Anak</h4>
+                    <p class="mt-2 text-sm text-gray-500">Akses absensi, nilai, rapor, dan catatan perkembangan anak dari menu terkait.</p>
+                    <div v-if="children?.length" class="mt-4 divide-y divide-gray-200 border rounded-lg">
+                        <div v-for="child in children" :key="child.id" class="p-4">
+                            <p class="font-medium text-gray-900">{{ child.nama_lengkap }}</p>
+                            <p class="text-sm text-gray-500">{{ child.rombel?.nama_rombel || 'Rombel belum ditentukan' }} · {{ child.jurusan?.nama_jurusan || 'Jurusan belum ditentukan' }}</p>
+                        </div>
+                    </div>
+                    <p v-else class="mt-4 text-sm text-gray-500">Belum ada data anak yang terhubung.</p>
                 </div>
 
             </div>

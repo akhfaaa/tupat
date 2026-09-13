@@ -5,89 +5,91 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import AppSidebar from '@/Components/AppSidebar.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+const roles = computed(() => {
+    const value = user.value?.roles ?? [];
+    return Array.isArray(value) ? value : Object.values(value);
+});
 const hasRole = (roleName) => {
-    return user.value?.roles?.includes(roleName);
+    return roles.value.includes(roleName);
 };
+const canManageMasterData = computed(() => hasRole('super-admin') || hasRole('tu'));
+const canAccessTeaching = computed(() => hasRole('super-admin') || hasRole('guru'));
+const canAccessSmkModules = computed(() => [
+    'super-admin', 'tu', 'guru', 'guru-bk', 'wali-kelas', 'hubin', 'mentor-industri', 'bkk',
+].some((role) => hasRole(role)));
+const canAccessStudent = computed(() => hasRole('siswa'));
 </script>
 
 <template>
     <div>
-        <div class="min-h-screen bg-gray-100">
-            <nav class="border-b border-gray-100 bg-white">
+        <AppSidebar />
+        <div class="min-h-screen bg-gray-100 lg:pl-72">
+            <nav class="sticky top-0 z-50 border-b border-gray-200/80 bg-white/95 shadow-sm backdrop-blur lg:hidden">
                 <!-- Primary Navigation Menu -->
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="flex h-16 justify-between">
-                        <div class="flex">
+                    <div class="flex min-h-16 items-center justify-between gap-4">
+                        <div class="flex min-w-0 flex-1 items-center">
                             <!-- Logo -->
                             <div class="flex shrink-0 items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('dashboard')" class="rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800" />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div class="hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto sm:-my-px sm:ms-8 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
 
-                                <!-- Menu Khusus Admin & TU -->
-                                <template v-if="hasRole('super-admin') || hasRole('tu')">
-                                    <NavLink :href="route('jurusan.index')" :active="route().current('jurusan.*')">
-                                        Jurusan
-                                    </NavLink>
-                                    <NavLink :href="route('tahun-ajaran.index')"
-                                        :active="route().current('tahun-ajaran.*')">
-                                        Tahun Ajaran
-                                    </NavLink>
-                                    <NavLink :href="route('guru.index')" :active="route().current('guru.*')">
-                                        Data Guru
-                                    </NavLink>
-                                    <NavLink :href="route('rombel.index')" :active="route().current('rombel.*')">
-                                        Data Kelas/Rombel
-                                    </NavLink>
-                                    <NavLink :href="route('siswa.index')" :active="route().current('siswa.*')">
-                                        Data Siswa
-                                    </NavLink>
-                                    <NavLink :href="route('mata-pelajaran.index')"
-                                        :active="route().current('mata-pelajaran.*')">
-                                        Mata Pelajaran
-                                    </NavLink>
-
-                                    <!-- Divider Akademik -->
-                                    <div class="hidden sm:flex items-center ml-4 border-l pl-4 border-gray-300">
-                                        <span
-                                            class="text-xs text-gray-400 font-bold uppercase tracking-wider">Akademik</span>
+                                <template v-if="canManageMasterData">
+                                    <div class="ml-2 flex shrink-0 items-center gap-1 border-l border-gray-200 pl-2">
+                                        <span class="px-2 text-[11px] font-bold uppercase tracking-wider text-gray-400">Master Data</span>
+                                        <NavLink :href="route('jurusan.index')" :active="route().current('jurusan.*')">
+                                            Jurusan
+                                        </NavLink>
+                                        <NavLink :href="route('tahun-ajaran.index')" :active="route().current('tahun-ajaran.*')">
+                                            Tahun Ajaran
+                                        </NavLink>
+                                        <NavLink :href="route('guru.index')" :active="route().current('guru.*')">Guru</NavLink>
+                                        <NavLink :href="route('rombel.index')" :active="route().current('rombel.*')">Rombel</NavLink>
+                                        <NavLink :href="route('siswa.index')" :active="route().current('siswa.*')">Siswa</NavLink>
+                                        <NavLink :href="route('mata-pelajaran.index')" :active="route().current('mata-pelajaran.*')">Mapel</NavLink>
+                                        <NavLink :href="route('jadwal.index')" :active="route().current('jadwal.*')">Jadwal</NavLink>
+                                        <NavLink :href="route('pkl.index')" :active="route().current('pkl.*')">PKL</NavLink>
                                     </div>
-
-                                    <NavLink :href="route('jadwal.index')" :active="route().current('jadwal.*')">
-                                        Jadwal Pelajaran
-                                    </NavLink>
-                                    <NavLink :href="route('pkl.index')" :active="route().current('pkl.*')">
-                                        Data PKL
-                                    </NavLink>
                                 </template>
 
-                                <!-- Menu Khusus Guru -->
-                                <template v-if="hasRole('super-admin') || hasRole('guru')">
+                                <template v-if="canAccessTeaching">
+                                    <div class="ml-2 flex shrink-0 items-center gap-1 border-l border-gray-200 pl-2">
+                                        <span class="px-2 text-[11px] font-bold uppercase tracking-wider text-gray-400">Mengajar</span>
                                     <NavLink :href="route('jurnal.index')" :active="route().current('jurnal.*')">
                                         Jurnal & Presensi
                                     </NavLink>
                                     <NavLink :href="route('penilaian.index')" :active="route().current('penilaian.*')">
                                         Input Nilai (E-Rapor)
                                     </NavLink>
+                                    </div>
                                 </template>
 
-                                <!-- Menu Khusus Siswa -->
-                                <template v-if="hasRole('siswa')">
+                                <NavLink v-if="canAccessSmkModules"
+                                    :href="route('modules.smk')" :active="route().current('modules.smk')">
+                                    Modul SMK
+                                </NavLink>
+
+                                <template v-if="canAccessStudent">
                                     <NavLink :href="route('siswa.rapor')" :active="route().current('siswa.rapor')">
                                         E-Rapor Saya
+                                    </NavLink>
+                                    <NavLink :href="route('siswa.pkl.index')" :active="route().current('siswa.pkl.*')">
+                                        PKL dan Logbook
                                     </NavLink>
                                 </template>
                             </div>
@@ -152,7 +154,7 @@ const hasRole = (roleName) => {
                             Dashboard
                         </ResponsiveNavLink>
 
-                        <template v-if="hasRole('super-admin') || hasRole('tu')">
+                        <template v-if="canManageMasterData">
                             <ResponsiveNavLink :href="route('jurusan.index')" :active="route().current('jurusan.*')">
                                 Master Data (Jurusan)</ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('tahun-ajaran.index')"
@@ -171,16 +173,23 @@ const hasRole = (roleName) => {
                             </ResponsiveNavLink>
                         </template>
 
-                        <template v-if="hasRole('super-admin') || hasRole('guru')">
+                        <template v-if="canAccessTeaching">
                             <ResponsiveNavLink :href="route('jurnal.index')" :active="route().current('jurnal.*')">
                                 Jurnal & Presensi</ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('penilaian.index')"
                                 :active="route().current('penilaian.*')">Input Nilai (E-Rapor)</ResponsiveNavLink>
                         </template>
 
+                        <ResponsiveNavLink v-if="canAccessSmkModules"
+                            :href="route('modules.smk')" :active="route().current('modules.smk')">
+                            Modul SMK
+                        </ResponsiveNavLink>
+
                         <template v-if="hasRole('siswa')">
                             <ResponsiveNavLink :href="route('siswa.rapor')" :active="route().current('siswa.rapor')">
                                 E-Rapor Saya</ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('siswa.pkl.index')" :active="route().current('siswa.pkl.*')">
+                                PKL dan Logbook</ResponsiveNavLink>
                         </template>
                     </div>
 
